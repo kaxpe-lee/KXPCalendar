@@ -1,0 +1,76 @@
+@page {
+    margin-left: 0.5cm;
+    margin-right: 0.5cm;
+    margin-top: 0.5cm;
+    margin-bottom: 0cm;
+}
+@page {
+    size: a4 portrait;
+    @frame header_frame {           /* Static Frame */
+        -pdf-frame-content: header_content;
+        -pdf-frame-border: 1;
+        left: 25pt; 
+        width: 512pt; 
+        top: 25pt; 
+        height: 40pt;
+    }
+    @frame content_frame {          /* Content Frame */
+        left: 50pt; width: 512pt; top: 90pt; height: 632pt;
+    }
+    @frame footer_frame {           /* Another static Frame */
+        -pdf-frame-content: footer_content;
+        left: 50pt; width: 512pt; top: 772pt; height: 20pt;
+    }
+}
+body {
+font-family: serif;
+}
+table, th, td {
+    border: 1px solid black;
+  }
+#logo {
+    margin:0px;
+    padding: 0px;
+    background-color: pink;
+}
+#foto {
+    margin: 0px;
+    padding: 0px;
+}
+#titulo {
+    color: #3a5e43;
+    font-size:18px;
+    font-weight:600; 
+    margin:5px 0 1px 0;
+    padding:1px 0 0 0;
+    background-color: aqua;
+    height:10px;
+}
+#localidad {
+    font-size:20px;
+    margin:0px 0px -10px 0px;
+    padding: 0;
+}
+
+.td-cabecera {
+    padding:0px;
+    margin:0px;
+    background-color: #3a5e43;
+    font-size: 15px;
+    color:white
+}
+
+.columna {
+    width: 450px; /* Puedes ajustar el ancho según tus necesidades */
+    display: inline;
+    box-sizing: border-box;
+    vertical-align: top; /* Alinea las columnas en la parte superior */
+    background-color: aqua;
+  }
+
+  /* Estilo adicional para mejorar la apariencia */
+  .columna {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin: 1%; /* Agrega un pequeño margen entre las columnas */
+  }
