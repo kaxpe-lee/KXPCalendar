@@ -1,0 +1,65 @@
+{% extends 'base_login.html' %}
+
+{% block header %}
+    <h2>
+        {% block title %}Registrar usuario{% endblock %}
+    </h2>
+{% endblock %}
+
+{% block content %}
+<section class="vh-100" style="background-color: #233054;">
+    <div class="container py-4 h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        
+          <div class="card shadow-2-strong" style="border-radius: 1rem;">
+            <div class="card-body p-4 text-center">
+                <img class="d-block mx-auto mb-2" src="{{ url_for('static', filename='images/logo-tla.jpg') }}" alt="Azure Logo" width="150"/>
+                <h2 style="font-weight: 100;" class="mb-4">Create New Account</h2>
+                <form action="" method="post">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-5 form-outline mb-4">
+                                <input type="text" id="username" name="username" class="form-control form-control-lg" placeholder="Usuario" required />
+                            </div>
+                            <div class="col-5 form-outline mb-4">
+                                <input type="password" id="password" name="password" class="form-control form-control-lg" placeholder="Password" required />
+                            </div>
+                            <div class="col-2 form-outline mb-4">
+                                <input type="text" id="nivel" name="nivel" class="form-control form-control-lg" placeholder="nivel"/>
+                            </div>
+                            <div class="col-4 form-outline mb-4">
+                                <input type="text" id="mail" name="mail" class="form-control form-control-lg" placeholder="Email"/>
+                            </div>
+                            <div class="col-4 form-outline mb-4">
+                                <input type="text" id="nombre" name="nombre" class="form-control form-control-lg" placeholder="Nombre" />
+                            </div>
+                            <div class="col-4 form-outline mb-4">
+                                <input type="text" id="apellido" name="apellido" class="form-control form-control-lg" placeholder="Apellido"/>
+                            </div>
+                            <div class="col-6 form-outline mb-4">
+                                <input type="text" id="telefono" name="telefono" class="form-control form-control-lg" placeholder="Teléfono" />
+                            </div>
+                            <div class="col-6 form-outline mb-4">
+                                <input type="text" id="oficina" name="oficina" class="form-control form-control-lg" placeholder="Oficina"/>
+                            </div>
+                        </div>
+                    <div>
+              <!-- Checkbox -->
+              
+                <div class="d-grid gap-2">
+                    <button class="btn btn-secondary" type="submit">Register</button>
+                </div>
+              
+              <hr class="my-4">
+              {% for message in get_flashed_messages() %}
+              <div> {{ message }}</div>
+              {% endfor %}
+            </form>
+  
+            </div>
+          </div>
+      </div>
+    </div>
+  </section>
+    
+{% endblock %}
