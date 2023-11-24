@@ -21,7 +21,11 @@ app.register_blueprint(user)
 
 @app.route('/')
 def index():
-    return "Hola Flask"
+    if 'user_id' in session:
+        return "Usuario logueado"  
+    else:
+	    return redirect(url_for('user.login'))
+    
 
 def testeando():
     if db.session.query(User).count() == 0:
