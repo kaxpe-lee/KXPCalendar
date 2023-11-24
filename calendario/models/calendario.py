@@ -22,7 +22,7 @@ class Calendario(db.Model):
 
     def __init__(self, fecha, ejercicio,mes,mes2, nombre_mes,dia,dia2,trimestre,semana, weekday) -> None:
             
-            fecha_referencia = date.fromisoformat(current_app.config['YEAR_ONE'] + "-01-01")
+            fecha_referencia = date.fromisoformat("2024-01-01")
             
             self.id = (fecha - fecha_referencia).days +1
             self.fecha = fecha
