@@ -1,0 +1,18 @@
+{% extends 'pdf.html' %}
+
+{% block body %}
+ <!-- Content for Static Frame 'header_frame' -->
+ <div id="header_content">
+    <div class="columna">uno</div>
+    <div style="margin-left:auto" class="columna">dos</div>
+ </div>
+
+ <!-- Content for Static Frame 'footer_frame' -->
+ <div id="footer_content">(c) - page <pdf:pagenumber>
+     of <pdf:pagecount>
+ </div>
+
+ <!-- HTML Content -->
+ To PDF or not to PDF
+
+{% endblock %}

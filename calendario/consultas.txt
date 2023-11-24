@@ -1,0 +1,15 @@
+LEFT JOIN CALENDARIO
+SELECT
+  calendarios.id,
+  calendarios.fecha,
+  festivocoms.nombre,
+  festivocoms.comunidad_id,
+  festivocoms.descripcion,
+  festivolocs.nombre
+ 
+FROM calendarios
+LEFT JOIN festivocoms
+ON calendarios.id = festivocoms.calendario_id AND festivocoms.comunidad_id = 10
+LEFT JOIN festivolocs
+ON calendarios.id = festivolocs.calendario_id AND festivolocs.localidad_id = 11
+WHERE calendarios.mes like '12';

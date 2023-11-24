@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block rside %}
+<h5 class="rside-cab">Configuración</h5>
+<h5 class="rside-cab2">Importación de datos</h5>
+<div class="">
+    {{resumen}}
+    <h3>Tabla Empresas</h3>
+        <h4>
+            Número de empresas: {% if emp %} {{ emp | safe }} {% else %} No existe el excel
+        </h4>
+        <h3>Tabla Localidades</h3>
+        <h4>
+            Número de localidade: {% if loc %}  {{ loc | safe }} {% else %} No existe el excel
+        </h4>
+        <h3>Tabla Festivos comunidades</h3>
+        <h4>
+            Número de festivos: {% if fcom %} {{ fcom | safe }} {% else %} No existe el excel
+        </h4>
+        <h3>Tabla Festivos locales</h3>
+        <h4>
+            Número de festivos: {% if floc %} {{ floc | safe }} {% else %} No existe el excel
+        </h4>
+        <div><a href="#">Importar</a></div>
+</div>
+{% endblock %}

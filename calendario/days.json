@@ -1,0 +1,71 @@
+{
+"year": 2024, 
+"month": 2, 
+"day_one_weekday": 3, 
+"days": [{
+    "fecha": "1900-01-01", 
+    "id": "0", 
+    "dia": "", 
+    "dia2": "", 
+    "festivocom": {
+        "nombre": "", 
+        "descripcion": ""
+        }, 
+    "festivoloc": {
+        "nombre": "", 
+        "descripcion": ""
+        }}, 
+    {
+    "fecha": "1900-01-01", 
+    "id": "0", 
+    "dia": "", 
+    "dia2": "", 
+    "festivocom": {
+        "nombre": "", 
+        "descripcion": ""}, 
+    "festivoloc": {
+        "nombre": "", 
+        "descripcion": ""
+        }}, 
+    {
+    "fecha": "1900-01-01", 
+    "id": "0", 
+    "dia": "", 
+    "dia2": "", 
+    "festivocom": {
+        "nombre": "", 
+        "descripcion": ""}, 
+    "festivoloc": {
+        "nombre": "", 
+        "descripcion": ""}}, 
+    Calendarios: 2024-02-01, 
+    Calendarios: 2024-02-02, 
+    Calendarios: 2024-02-03, 
+    Calendarios: 2024-02-04, 
+    Calendarios: 2024-02-05, 
+    Calendarios: 2024-02-06, 
+    Calendarios: 2024-02-07, 
+    Calendarios: 2024-02-08, 
+    Calendarios: 2024-02-09, 
+    Calendarios: 2024-02-10, 
+    Calendarios: 2024-02-11, 
+    Calendarios: 2024-02-12, 
+    Calendarios: 2024-02-13, 
+    Calendarios: 2024-02-14, 
+    Calendarios: 2024-02-15, 
+    Calendarios: 2024-02-16, 
+    Calendarios: 2024-02-17, 
+    Calendarios: 2024-02-18, 
+    Calendarios: 2024-02-19, 
+    Calendarios: 2024-02-20, 
+    Calendarios: 2024-02-21, 
+    Calendarios: 2024-02-22, 
+    Calendarios: 2024-02-23, 
+    Calendarios: 2024-02-24, 
+    Calendarios: 2024-02-25, 
+    Calendarios: 2024-02-26, 
+    Calendarios: 2024-02-27,
+    Calendarios: 2024-02-28, 
+    Calendarios: 2024-02-29], 
+    "days_name": ["L", "M", "X", "J", "V", "S", "D"], 
+    "day_one": Calendarios: 2024-02-01}

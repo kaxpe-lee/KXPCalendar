@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block rside %}
+<h5 class="rside-cab">Calendario laboral</h5>
+<h5 class="rside-cab2">Inicio</h5>
+<div class="">
+    {% if datos.calendario == 0 %}
+
+    <div>Aún no existe un calendario. Debes crear uno para continuar.</div>
+    <form action="{{ url_for('calendario.dias')}}" method="POST" enctype="multipart/form-data">
+        {{ form.csrf_token }}
+        <div class="row">
+            <div class="col-4 mb-2">
+                {{form.year.label }}
+                {{ form.year(class_="",placeholder="Año") }}
+            </div>
+            <div class="col-1 mb-2 ">
+                <br>
+                {{ form.submit(class="calbutton",style="width:100%") }}
+            </div>
+        </div>
+    </form>
+    {% else %}
+    <div>
+        <div>Comunidades autónomas</div>
+        <div>{{ datos.comunidades }}</div>
+    </div>
+    <div>
+        <div>Localidades</div>
+        <div>{{ datos.localidades }}</div>
+    </div>
+    <div>
+        <div>Empresas</div>
+        <div>{{ datos.empresas }}</div>
+    </div>
+    <div>
+        <div>Festivos Comunidades</div>
+        <div>{{ datos.festivocom }}</div>
+    </div>
+    <div>
+        <div>Festivos Localidades</div>
+        <div>{{ datos.festivoloc }}</div>
+    </div>
+    <div></div>
+    {% endif %}
+</div>
+{% endblock %}

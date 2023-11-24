@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block rside %}
+<h5 class="rside-cab">Configuración</h5>
+<h5 class="rside-cab2">Importación de datos</h5>
+<div class="">
+    <form action="{{ url_for('calendario.datos')}}" method="POST" enctype="multipart/form-data">
+        {{ form.csrf_token }}
+        <div class="row">
+            <div class="col-4 mb-2">
+                {{form.fichero.label }}
+                {{ form.fichero(class_="",placeholder="Fichero") }}
+            </div>                     
+            <div class="col-1 mb-2 ">
+                <br>
+                {{ form.submit(class="calbutton",style="width:100%") }}
+            </div>
+        </div>
+    </form>
+    <div class="">
+        
+        <h3>Tabla Empresas</h3>
+        <h4>
+            Número de empresas: {% if resumen %} {{ resumen.emp | safe }} {% else %} No existe el excel {% endif %}
+        </h4>
+        <h3>Tabla Localidades</h3>
+        <h4>
+            Número de localidade: {% if resumen %}  {{ resumen.loc | safe }} {% else %} No existe el excel {% endif %}
+        </h4>
+        <h3>Tabla Festivos comunidades</h3>
+        <h4>
+            Número de festivos: {% if resumen %} {{ resumen.fcom | safe }} {% else %} No existe el excel {% endif %}
+        </h4>
+        <h3>Tabla Festivos locales</h3>
+        <h4>
+            Número de festivos: {% if resumen %} {{ resumen.floc | safe }} {% else %} No existe el excel {% endif %}
+        </h4>
+        <div><a href="{{url_for('calendario.datos_import')}}">Importar</a></div>
+    </div>
+</div>
+{% endblock %}

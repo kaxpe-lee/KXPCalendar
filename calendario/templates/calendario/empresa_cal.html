@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% block rside %}
+<h5 class="rside-cab">Empresas</h5>
+<h5 class="rside-cab2">Calendario laboral - {{empresa.nombre}} {% if empresa.centro %}({{empresa.centro}}) {% endif %}</h5>
+<div style="width:100%;text-align: center;margin-top:30px;">
+    <span style="font-size: 22px;">Descargar calendario </span>
+    <a href="{{ url_for('calendario.calendario_anual',ejercicio='2024',localidad_id=empresa.localidad_id,empresa=empresa.id)}}"><svg xmlns="http://www.w3.org/2000/svg" height="22" viewBox="0 0 448 512">
+        <path d="M128 0c17.7 0 32 14.3 32 32V64H288V32c0-17.7 14.3-32 32-32s32 14.3 32 32V64h48c26.5 0 48 21.5 48 48v48H0V112C0 85.5 21.5 64 48 64H96V32c0-17.7 14.3-32 32-32zM0 192H448V464c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V192zm64 80v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V272c0-8.8-7.2-16-16-16H80c-8.8 0-16 7.2-16 16zm128 0v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V272c0-8.8-7.2-16-16-16H208c-8.8 0-16 7.2-16 16zm144-16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V272c0-8.8-7.2-16-16-16H336zM64 400v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V400c0-8.8-7.2-16-16-16H80c-8.8 0-16 7.2-16 16zm144-16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V400c0-8.8-7.2-16-16-16H208zm112 16v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V400c0-8.8-7.2-16-16-16H336c-8.8 0-16 7.2-16 16z"/>
+        </svg>
+    </a>
+</div>
+<div id="cal-year-cont" style="margin-top:20px;">
+    {% for month in datos %}
+    <div id="cal-month-cont">
+        <div id="cal-month-cont">
+            <div id="cal-month-cab">
+                <div>{{month.resultado[15].nombre_mes}}</div>
+                <div>2024</div>
+            </div>
+            <div id="cal-month-names">
+                <div class="cal-month-name">lu</div>
+                <div class="cal-month-name">ma</div>
+                <div class="cal-month-name">mie</div>
+                <div class="cal-month-name">ju</div>
+                <div class="cal-month-name">vi</div>
+                <div class="cal-month-name">sa</div>
+                <div class="cal-month-name">do</div>
+            </div>
+            <div id="cal-month-days">
+                {% for day in month.resultado %}
+                <div class="cal-month-day 
+                {% if day.weekday == 6 and not day.festivocom_nombre and not day.festivoloc_nombre %} 
+                    domingo 
+                {% endif %} 
+                {% if day.festivoloc_nombre %} 
+                    festivoloc 
+                {% endif %} 
+                {% if day.festivocom_nombre %} 
+                    festivocom 
+                {% endif %}">
+                    {{ day.dia }}
+                </div>
+                {% endfor %}
+            </div>
+            <div>
+            
+        </div>
+        </div>
+    </div>
+    {% endfor %}  
+</div>
+<div style="margin-top:30px;">
+    <table class="table">
+        <caption>Festivos {% if festivoscom[0] %}{{festivoscom[0].comunidad.nombre}}{% endif %}</caption>
+        <tr>
+            <th>Fecha</th>
+            <th>Festividad</th>
+            <th>Comunidad</th>
+            <th></th>
+            <th></th>
+        </tr>
+        {% for festivo in festivoscom %}
+        <tr>
+            <td>{{ festivo.fecha}}</td>
+            <td>{{ festivo.nombre}}</td>
+            <td>{{ festivo.comunidad.nombre }}</td>
+            <td></td>
+            <td></td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+<div style="margin-top:30px;">
+    <table class="table">
+        <caption>Festivos {% if festivosloc[0] %}{{festivosloc[0].localidad.nombre}}{% endif %}</caption>
+        <tr>
+            <th>Fecha</th>
+            <th>Festividad</th>
+            <th>Localidad</th>
+            <th></th>
+            <th></th>
+        </tr>
+        {% for festivo in festivosloc %}
+        <tr>
+            <td>{{festivo.fecha}}</td>
+            <td>{{festivo.nombre}}</td>
+            <td>{{festivo.localidad.nombre }}</td>
+            <td></td>
+            <td></td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

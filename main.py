@@ -19,6 +19,9 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from user.routes import user
 app.register_blueprint(user)
 
+from calendario.routes import calendario
+app.register_blueprint(calendario)
+
 @app.route('/')
 def index():
     if 'user_id' in session:

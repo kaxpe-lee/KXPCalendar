@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block rside %}
+<h5 class="rside-cab">Festivos de localidades</h5>
+<h5 class="rside-cab2">Tabla de días festivos locales</h5>
+<table class="table">
+    <tr>
+        <th>id.</th>
+        <th>Fecha</th>
+        <th>Festividad</th>
+        <th>Localidad</th>
+        <th>Comunidad</th>
+        <th></th>
+    </tr>
+    {% for festivo in festivoslocales %}
+    <tr>
+        <td>{{ festivo.id }}</td>
+        <td>{{ festivo.fecha}}</td>
+        <td>{{ festivo.nombre}}</td>
+        <td>{{ festivo.localidad.nombre }}</td>
+        <td>{{ festivo.localidad.comunidad.nombre }}</td>
+        <td></td>
+    </tr>
+    {% endfor %}
+</table>
+<div id="separador"></div>
+<div id="cal-year-cont">
+    {% for month in meses %}
+    <div id="cal-month-cont">
+        <div id="cal-month-cont">
+            <div id="cal-month-cab">
+                <div>{{ cal[month].day_one.nombre_mes }}</div>
+                <div>{{ cal[month].day_one.ejercicio }}</div>
+            </div>
+            <div id="cal-month-names">
+                <div class="cal-month-name">lu</div>
+                <div class="cal-month-name">ma</div>
+                <div class="cal-month-name">mie</div>
+                <div class="cal-month-name">ju</div>
+                <div class="cal-month-name">vi</div>
+                <div class="cal-month-name">sa</div>
+                <div class="cal-month-name">do</div>
+            </div>
+            <div id="cal-month-days">
+                {% for day in cal[month].days %}
+                <div class="cal-month-day {% if day.weekday == 6 %} domingo {% endif %} {% if day.festivoloc.nombre %} festivoloc {% endif %} {% if day.festivocom.nombre %} festivocom {% endif %}">{{ day.dia }}</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+
+    
+
+    {% endblock %}

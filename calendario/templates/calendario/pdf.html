@@ -1,0 +1,138 @@
+{% extends 'pdf.html' %}
+
+{% block body %}
+<!-- Content for Static Frame 'header_frame' -->
+<div id="header_content">Lyrics-R-Us</div>
+
+<!-- Content for Static Frame 'footer_frame' -->
+<div id="footer_content">(c) - page <pdf:pagenumber>
+    of <pdf:pagecount>
+</div>
+<table style="padding:0;margin:0">
+    <tr>
+        <td id="logo" rowspan="2" align="left"><img id="foto" src="static/img/logo.jpg" width="250" alt="Grupo Asesor Ros"></td>
+        <td align="right" id="titulo"><div>CALENDARIO LABORAL 2024</div></td>
+    </tr>
+    <tr>
+        <td style="margin:0;padding:0" align="right" id="localidad">Elche</td>
+    </tr>
+</table>
+<table width="100%">
+    <tr>
+        <td width="60" align="left" id="lineas">Empresa: </td>
+        <td align="left" id="lineas">{{ empresa.nombre }}</td>
+    </tr>
+    <tr>
+        <td align="left" id="lineas">Domicilio: </td>
+        <td align="left" id="lineas">{{ empresa.domicilio }}</td>
+    </tr>
+    <tr>
+        <td align="left" id="lineas">Actividad: </td>
+        <td align="left" id="lineas">{{ empresa.actividad }}</td>
+    </tr>
+    <tr>
+        <td align="left" id="lineas">Convenio: </td>
+        <td align="left" id="lineas">{{ empresa.convenio }}</td>
+    </tr>
+</table>
+
+<table>
+    <tr>
+        <td width="25%" style='padding-right:6px;padding-left:0px;'>
+            <table>
+                <tr>
+                    <td class="td-cabecera" align="center" colspan="1">Enero 2024</td>
+                </tr>
+            </table>
+        </td>
+        <td width="25%"  style='padding-right:6px;padding-left:6px;'>
+            <table>
+                <tr>
+                    <td class="td-cabecera" align="center" colspan="7">Febrero 2024</td>
+                </tr>
+            </table>
+        </td>
+        <td width="25%"  style='padding-right:6px;padding-left:6px;'>
+            <table>
+                <tr>
+                    <td class="td-cabecera" align="center" colspan="7">Marzo 2024</td>
+                </tr>
+            </table>
+        </td>
+        <td width="25%"  style='padding-right:0px;padding-left:6px;'>
+            <table>
+                <tr>
+                    <td class="td-cabecera" align="center" colspan="7">Abril 2024</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+<table>
+    <tr>
+        <td width="25%"  style='padding-right:6px;padding-left:0px;'>
+            <table>
+                <tr>
+                    <td class="td-cabecera" align="center" colspan="7">Mayo 2024</td>
+                </tr>
+            </table>
+        </td>
+        <td width="25%"  style='padding-right:6px;padding-left:6px;'>
+            <table>
+                <tr>
+                    <td class="td-cabecera" align="center" colspan="7">Junio 2024</td>
+                </tr>
+            </table>
+        </td>
+        <td width="25%"  style='padding-right:6px;padding-left:6px;'>
+            <table>
+                <tr>
+                    <td class="td-cabecera" align="center" colspan="7">Julio 2024</td>
+                </tr>
+            </table>
+        </td>
+        <td width="25%"  style='padding-right:0px;padding-left:6px;'>
+            <table>
+                <tr>
+                    <td class="td-cabecera" align="center" colspan="7">Agosto 2024</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+<table>
+    <tr>
+        <td width="25%"  style='padding-right:6px;padding-left:0px;'>
+            <table>
+                <tr>
+                    <td class="td-cabecera" align="center" colspan="7">Septiembre 2024</td>
+                </tr>
+            </table>
+        </td>
+        <td width="25%"  style='padding-right:6px;padding-left:6px;'>
+            <table>
+                <tr>
+                    <td class="td-cabecera" align="center" colspan="7">Octubre 2024</td>
+                </tr>
+            </table>
+        </td>
+        <td width="25%"  style='padding-right:6px;padding-left:6px;'>
+            <table>
+                <tr>
+                    <td class="td-cabecera" align="center" colspan="7">Noviembre 2024</td>
+                </tr>
+            </table>
+        </td>
+        <td width="25%"  style='padding-right:0px;padding-left:6px;'>
+            <table>
+                <tr>
+                    <td class="td-cabecera" align="center" colspan="7">Diciembre 2024</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+<style>
+    
+</style>
+{% endblock %}

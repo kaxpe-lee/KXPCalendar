@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block rside %}
+<h5 class="rside-cab">Festivos comunidad</h5>
+<h5 class="rside-cab2">Fichero Excel</h5>
+<div class="">
+    <form action="{{ url_for('calendario.imfesloc')}}" method="POST" enctype="multipart/form-data">
+        {{ form.csrf_token }}
+        <div class="row">
+            <div class="col-4 mb-2">
+                {{form.fichero.label }}
+                {{ form.fichero(class_="",placeholder="Fichero") }}
+            </div>                     
+            <div class="col-1 mb-2 ">
+                <br>
+                {{ form.submit(class="calbutton",style="width:100%") }}
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
