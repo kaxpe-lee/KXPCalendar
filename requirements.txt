@@ -14,5 +14,5 @@ PyMySQL==1.1.0
 python-dateutil==2.8.2
 #pandas==2.1.1
 reportlab==4.0.7
-#fpdf2==2.7.6
+fpdf2==2.7.6
 
