@@ -61,7 +61,7 @@ def dias():
     form = fcalendario()
     year = request.form['year']
     
-    locale.setlocale(locale.LC_TIME, 'es_ES')
+    #locale.setlocale(locale.LC_TIME, 'es_ES')
     fecha_inicial = year + "-01-01"
     fecha_final = year + "-12-31"
     fecha_inicial_obj = date.fromisoformat(fecha_inicial)
