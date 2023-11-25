@@ -394,3 +394,335 @@ def get_calendar(mes, ano,localidad, comunidad):
     #print("comunidad: ")
     #print(comunidad)
     return datos
+
+@calendario.route('/calendario_anual/<ejercicio>/<localidad_id>/<empresa>')
+def calendario_anual(ejercicio,localidad_id,empresa):
+    localidad = Localidad.query.get(localidad_id)
+    print(localidad.nombre)
+    empresa = Empresa.query.get(empresa)
+    
+    com = Festivocom.query.filter(Festivocom.comunidad_id == localidad.comunidad_id).order_by(Festivocom.fecha).all()
+    loc = Festivoloc.query.filter(Festivoloc.localidad_id == localidad.id).order_by(Festivoloc.fecha).all()
+    # Crear un objeto PDF con FPDF2
+    pdf = PDF()
+    
+    pdf.set_auto_page_break(auto=True, margin=15)
+    
+    pdf.add_page()
+
+    pdf.cab(empresa,localidad)
+    # Definir los meses el 1 cuatrimestre
+    
+    x = 8
+    y = 55
+    largo = 46.125
+    espacio = 2.5
+    
+    #pdf.add_month(x, y,get_calendar(1,2024,localidad, comunidad))
+
+    mes = 1
+    for c in range(1,4):
+        for m in range(1,5):
+            pdf.add_month(x, y,get_calendar(mes,2024,localidad.id,localidad.comunidad_id))
+            x = x + largo + espacio
+            mes += 1
+        x = 8
+        y += 48
+        
+
+
+
+    pdf.pie(com,loc,localidad)
+    # Guardar el PDF en un buffer
+    buffer = BytesIO()
+    pdf.output(buffer)
+
+    # Crear una respuesta Flask y establecer el contenido del PDF
+    response = make_response(buffer.getvalue())
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = 'inline; filename=calendario_anual.pdf'
+
+    return response
+
+
+class PDF(FPDF):
+    def header(self):
+        pass
+        
+    def cab(self,empresa,localidad):
+        localidad = localidad
+        empresa = empresa
+        self.image('./static/img/logo.png', 8, 8, 65)
+
+        # Título a la derecha y pegado al margen superior
+        self.set_xy(0, 11)
+        self.set_font('Times', 'B', 17)
+        self.set_text_color(58, 94, 67)
+        #title_width = self.get_string_width('Calendario Anual')  # Ancho del título
+        self.cell(0, 0, 'CALENDARIO LABORAL 2024', 0, 0, 'R')  # 'R' indica alineación a la derecha
+
+        self.set_xy(0, 18)
+        self.set_font('Times', 'B', 15)
+        self.set_text_color(0, 0, 0)
+        self.cell(0, 0, localidad.nombre.upper(), 0, 0, 'R')  # 'R' indica alineación a la derecha
+        self.set_xy(8, 28)
+        self.set_font('Times', '', 12)
+        self.set_text_color(0, 0, 0)
+        self.cell(0, 0, 'Empresa: ', 0, 0, 'L')  # 'R' indica alineación a la derecha
+        self.set_font('Times', 'B', 12)
+        self.set_xy(25, 28)
+        self.cell(0, 0, empresa.nombre, 0, 0, 'L')  # 'R' indica alineación a la derecha
+        self.set_xy(25, 28)
+        self.set_font('Times', '', 12)
+        self.set_text_color(204, 204, 204)
+        self.cell(0, 0, '__________________________________________________________________________________', 0, 0, 'L')  # 'R' indica alineación a la derecha
+        self.set_xy(8, 34)
+        self.set_text_color(0, 0, 0)
+        self.set_font('Times', '', 12)
+        self.cell(8, 0, 'Domicilio: ' + empresa.domicilio, 0, 0, 'L')  # 'R' indica alineación a la derecha
+        self.set_text_color(204, 204, 204)
+        self.set_xy(27, 34)
+        self.cell(0, 0, '_________________________________________________________________________________', 0, 0, 'L')  # 'R' indica alineación a la derecha
+        self.set_xy(8, 34)
+        self.set_text_color(0, 0, 0)
+        self.set_xy(25, 28)
+        self.set_font('Times', '', 12)
+        self.set_text_color(204, 204, 204)
+        self.cell(0, 0, '__________________________________________________________________________________', 0, 0, 'L')
+        self.set_xy(8, 40)
+        self.set_text_color(0, 0, 0)
+        self.cell(8, 0, 'Actividad: ' + empresa.actividad, 0, 0, 'L')
+        self.set_text_color(204, 204, 204)
+        self.set_xy(27, 40)
+        self.cell(0, 0, '_________________________________________________________________________________', 0, 0, 'L')
+        self.set_xy(8, 46)
+        self.set_text_color(0, 0, 0)
+        self.cell(8, 0, 'Convenio: ' + empresa.convenio, 0, 0, 'L')
+        self.set_text_color(204, 204, 204)
+        self.set_xy(27, 46)
+        self.cell(0, 0, '_________________________________________________________________________________', 0, 0, 'L')
+        self.set_xy(8, 52)
+
+
+        # Configurar el espacio entre las cabeceras
+        espacio_entre_cabeceras = 2.5
+
+        # Configurar el margen izquierdo y derecho
+        margen_izquierdo = 9
+        margen_derecho = 9
+    def pie(self,com,loc,localidad):
+        x = 8
+        y = 204
+        espacio = 6
+
+        self.set_xy(x,y)
+        self.set_fill_color(58, 94, 67)
+        self.set_text_color(255, 255, 255)
+        self.cell(192, 6, 'FIESTAS ' + localidad.comunidad.nombre.upper(), 0, 0, 'C', 1)
+        
+        x = 8
+        z = 105
+        y = 206 + 6
+        k = 206 + 6
+        r = 105
+        t = 264
+        self.set_font('Times', '', 11)
+        filas = len(com)/2 + 1
+        i = 1
+        for c in com:
+            if i < filas:
+                if c.descripcion == '':
+                    self.set_fill_color(178, 0, 0)
+                    self.set_text_color(255, 255, 255)
+                    self.set_xy(x,y)
+                    self.cell(4, 4, '',0,0,'C',1)
+                    x2 = x + 4
+                    self.set_xy(x2,y)
+                    self.set_fill_color(255, 255, 255)
+                    self.set_text_color(178, 0, 0)
+                    ancho1 = self.get_string_width(str(c.fecha)[-2:] + ' ' + str(c.calendariocom.nombre_mes[:3]))
+                    self.cell(ancho1+1, 4, str(c.fecha)[-2:] + ' ' + str(c.calendariocom.nombre_mes[:3]))
+                    self.set_text_color(0, 0, 0)
+                    ancho2 = self.get_string_width(c.nombre)
+                    self.cell(ancho2, 4, c.nombre)
+                    y = y + espacio
+                else:
+                    self.set_fill_color(20, 180, 0)
+                    self.set_text_color(255, 255, 255)
+                    self.set_xy(x,y)
+                    self.cell(4, 4, '',0,0,'C',1)
+                    x2 = x + 4
+                    self.set_xy(x2,y)
+                    self.set_fill_color(255, 255, 255)
+                    self.set_text_color(20, 180, 0)
+                    ancho1 = self.get_string_width(str(c.fecha)[-2:] + ' ' + str(c.calendariocom.nombre_mes[:3]))
+                    self.cell(ancho1+1, 4, str(c.fecha)[-2:] + ' ' + str(c.calendariocom.nombre_mes[:3]))
+                    self.set_text_color(0, 0, 0)
+                    ancho2 = self.get_string_width(c.nombre)
+                    self.cell(ancho2, 4, c.nombre)
+                    y = y + espacio
+
+                    self.set_fill_color(20, 180, 0)
+                    self.set_text_color(255, 255, 255)
+                    self.set_xy(r,t)
+                    self.cell(4, 4, '',0,0,'C',1)
+                    r2 = r + 4
+                    self.set_xy(r2,t)
+                    self.set_fill_color(255, 255, 255)
+                    self.set_text_color(0, 0, 0)
+                    ancho1 = self.get_string_width(c.descripcion)
+                    self.cell(ancho1+1, 4, c.descripcion)
+                    t = t + espacio
+            else:
+                if c.descripcion == '':
+                    self.set_fill_color(178, 0, 0)
+                    self.set_text_color(255, 255, 255)
+                    self.set_xy(z,k)
+                    self.cell(4, 4, '',0,0,'C',1)
+                    z2 = z + 4
+                    self.set_xy(z2,k)
+                    self.set_fill_color(255, 255, 255)
+                    self.set_text_color(178, 0, 0)
+                    ancho1 = self.get_string_width(str(c.fecha)[-2:] + ' ' + str(c.calendariocom.nombre_mes[:3]))
+                    self.cell(ancho1+1, 4, str(c.fecha)[-2:] + ' ' + str(c.calendariocom.nombre_mes[:3]))
+                    self.set_text_color(0, 0, 0)
+                    ancho2 = self.get_string_width(c.nombre)
+                    self.cell(ancho2, 4, c.nombre)
+                    k = k + espacio
+                else:
+                    self.set_fill_color(20, 180, 0)
+                    self.set_text_color(255, 255, 255)
+                    self.set_xy(z,k)
+                    self.cell(4, 4, '',0,0,'C',1)
+                    z2 = z + 4
+                    self.set_xy(z2,k)
+                    self.set_fill_color(255, 255, 255)
+                    self.set_text_color(20, 180, 0)
+                    ancho1 = self.get_string_width(str(c.fecha)[-2:] + ' ' + str(c.calendariocom.nombre_mes[:3]))
+                    self.cell(ancho1+1, 4, str(c.fecha)[-2:] + ' ' + str(c.calendariocom.nombre_mes[:3]))
+                    self.set_text_color(0, 0, 0)
+                    ancho2 = self.get_string_width(c.nombre)
+                    self.cell(ancho2, 4, c.nombre)
+                    k = k + espacio
+
+                    self.set_fill_color(20, 180, 0)
+                    self.set_text_color(255, 255, 255)
+                    self.set_xy(r,t)
+                    self.cell(4, 4, '',0,0,'C',1)
+                    r2 = r + 4
+                    self.set_xy(r2,t)
+                    self.set_fill_color(255, 255, 255)
+                    self.set_text_color(0, 0, 0)
+                    ancho1 = self.get_string_width(c.descripcion)
+                    self.cell(ancho1+1, 4, c.descripcion)
+                    t = t + espacio
+            i += 1
+
+        y = 256
+        x = 8
+        self.set_xy(x,y)
+        self.set_fill_color(58, 94, 67)
+        self.set_text_color(255, 255, 255)
+        self.cell(95, 6, 'FIESTAS LOCALES', 0, 0, 'C', 1)
+
+        self.set_xy(x+95+2,y)
+        self.set_fill_color(58, 94, 67)
+        self.set_text_color(255, 255, 255)
+        self.cell(95, 6, 'OBSERVACIONES', 0, 0, 'C', 1)
+
+        x = 8
+        y = y + 8
+        for l in loc:
+            self.set_text_color(255, 255, 255)
+            self.set_fill_color(255, 128, 0)
+            self.set_xy(x,y)
+            self.cell(4, 4, '',0,0,'C',1)
+            x2 = x + 4
+            self.set_xy(x2,y)
+            self.set_text_color(255, 128, 0)
+            self.set_fill_color(255, 255, 255)
+            ancho1 = self.get_string_width(str(l.fecha)[-2:] + ' ' + str(l.calendarioloc.nombre_mes[:3]))
+            self.cell(ancho1+1, 4, str(l.fecha)[-2:] + ' ' + str(l.calendarioloc.nombre_mes[:3]),0,0,'L',1)
+            self.set_text_color(0, 0, 0)
+            ancho2 = self.get_string_width(l.nombre)
+            self.cell(ancho2, 4, l.nombre)
+            y = y + espacio
+        
+        
+
+        self.set_text_color(0, 0, 0)
+        self.set_fill_color(255, 255, 255)
+        self.set_xy(8 + 93 + 4,256+22)
+        self.cell(0, 4, localidad.nombre + ', a 1 de enero de 2024',0,0,'R',1)
+
+    def add_month(self,x,y,mes2):
+        self.set_xy(x,y)
+        self.set_fill_color(58, 94, 67)
+        self.set_text_color(255, 255, 255)
+
+        largo = 46.125
+        espacio = 2.5
+
+        self.cell(46.125, 6, mes2['day_one'].nombre_mes.capitalize(), 0, 0, 'C', 1)
+
+        # NOMBRE DIAS DE LA SEMANA
+        self.set_fill_color(255, 255, 255)
+        self.set_text_color(58, 94, 67)
+        self.set_font('Times', 'B', 11)
+
+        xcell = x
+        ycell = y + 6
+        lcell = 6.589
+        
+        dias_semana = mes2['days_name']
+        for i in dias_semana:
+
+            self.set_xy(xcell, ycell)
+            self.cell(lcell, 6, i, 0, 0, 'C', 1)
+            xcell = xcell + lcell
+
+        #dias = ['01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31']
+        dias = mes2['days']
+        xxcell = x
+        yycell = ycell + 6
+        self.set_text_color(0, 0, 0)
+        self.set_font('Times', '', 12)
+        dayweek = 0
+        #print(len(mes2['days']))
+        for d in mes2['days']:
+            
+            dayweek += 1
+            self.set_xy(xxcell,yycell)
+
+            self.set_fill_color(255, 255, 255)
+            self.set_text_color(0, 0, 0)
+
+            if d.weekday == 6:
+                self.set_fill_color(58, 94, 67)
+                self.set_text_color(255, 255, 255)
+            
+            if d.festivocom:
+                for day in d.festivocom:
+                    if day.comunidad_id == int(mes2['comunidad']):
+                        if day.descripcion != '':
+                            self.set_fill_color(20, 180, 0)
+                            self.set_text_color(255, 255, 255)
+                        else:
+                            self.set_fill_color(178, 0, 0)
+                            self.set_text_color(255, 255, 255)
+            if d.festivoloc:
+                #print("Localidad: ")
+                #print(mes2['localidad'])
+                for day in d.festivoloc:
+                    if day.localidad_id == int(mes2['localidad']):
+                        self.set_fill_color(255, 128, 0)
+                        self.set_text_color(255, 255, 255)                
+
+            self.set_draw_color(255,255,255)
+            self.cell(lcell,6,d.dia,1,0,'C',1)
+            if dayweek == 7:
+                xxcell = x
+                yycell = yycell + 6
+                dayweek = 0
+            else:
+                xxcell = xxcell + lcell
