@@ -13,7 +13,7 @@ class Festivoloc(db.Model):
 
     def __init__(self, fecha, nombre, descripcion, localidad_id) -> None:
             
-            fecha_referencia = date.fromisoformat(current_app.config['YEAR_ONE'] + "-01-01")
+            fecha_referencia = date.fromisoformat("2024-01-01")
 
             if isinstance(fecha, datetime):
                 fecha = fecha.date()

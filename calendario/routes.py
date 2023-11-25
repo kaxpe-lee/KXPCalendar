@@ -23,7 +23,7 @@ from main import db, app
 import os, json
 import locale
 import pandas as pd
-#from forms import fempresas
+from forms import fempresas
 from forms import fcalendario
 
 calendario = Blueprint('calendario', __name__, template_folder='templates', url_prefix='/calendario')
@@ -54,6 +54,21 @@ def inicio():
         datos = {'calendario' : calendario,'empresas':empresas,'comunidades':comunidades,'localidades':localidades,'festivocom':festivocom,'festivoloc':festivoloc}
 
     return render_template('calendario/inicio.html',datos = datos,form=form)
+
+@calendario.route('/comunidad/<id>')
+@login_required
+def comunidad(id):
+    localidades = Localidad.query.filter(Localidad.comunidad_id == id)
+    comunidad = Comunidad.query.get(id)
+    return render_template('calendario/comunidad.html',localidades = localidades, comunidad = comunidad)
+
+@calendario.route('/empresa/<id>')
+@login_required
+def empresa(id):
+    empresas = Empresa.query.filter(Empresa.localidad.has(Localidad.comunidad_id == id))
+    comunidad = Comunidad.query.get(id)
+    return render_template('calendario/empresa.html',empresas = empresas, comunidad = comunidad)
+
 
 @calendario.route('/dias/',methods = ['POST'])
 @login_required
@@ -102,6 +117,128 @@ def dias():
 
     return f"Se generaron y almacenaron {len(all_dates)} días correlativos en la base de datos."
 
+def resumen_excel():
+    data = 'calendario/static/excel/calendario.xlsx'
+    ruta = 'calendario/static/excel'
+    fichero = 'calendario.xlsx'
+
+    ruta_archivo = os.path.join(app.root_path, ruta, fichero)
+
+    if os.path.exists(ruta_archivo):
+
+        empresas = pd.read_excel(data,sheet_name="Empresas", names=['Empresa','Domicilio','Actividad','Convenio','Centro','Localidad'])
+        empresas[['localidad_id', 'localidad']] = empresas['Localidad'].str.split('-', expand=True)
+        empresas = empresas.fillna('')
+        emp = len(empresas)
+
+        localidades = pd.read_excel(data,sheet_name="Localidades")
+        localidades.columns = ['id','localidad','cod_localidad','cod_comunidad','descripcion']
+        localidades[['comunidad_id', 'comunidad']] = localidades['cod_comunidad'].str.split('-', expand=True)
+        localidades = localidades.fillna('')
+        loc = len(localidades)
+        
+        fesloc = pd.read_excel(data,sheet_name="Festivos_Localidades")
+        fesloc.columns = ['id','fecha','nombre','descripcion','id_localidad']
+        fesloc[['localidad_id', 'localidad']] = fesloc['id_localidad'].str.split('-', expand=True)
+        fesloc = fesloc.fillna('')
+        floc = len(fesloc)
+
+        fescom = pd.read_excel(data,sheet_name="Festivos_Comunidades")
+        fescom.columns = ['id','fecha','nombre','descripcion','id_comunidad']
+        fescom[['comunidad_id', 'comunidad']] = fescom['id_comunidad'].str.split('-', expand=True)
+        fescom = fescom.fillna('')
+        fcom = len(fescom)
+
+        resumen = {'fcom':fcom,'floc':floc,'loc':loc,'emp':emp}
+    else: 
+        resumen = {'fcom':0,'floc':0,'loc':0,'emp':0}
+    return resumen
+
+@calendario.route('/datos/',methods = ['GET','POST'])
+def datos():
+    if request.method == 'POST':
+        fichero = request.files['fichero']
+        if fichero:
+            form = fempresas()
+            
+            # Hacer algo con el archivo, por ejemplo, guardarlo en el servidor
+            filepath = os.path.abspath('calendario/static/excel/calendario.xlsx')
+            fichero.save(filepath)
+
+            resumen = resumen_excel()
+            return render_template('calendario/datosform.html',form=form, resumen = resumen)
+            
+        else:
+            ticket = ''
+            return "Metodo POST"
+    elif request.method == 'GET':
+        form = fempresas()
+
+        resumen = resumen_excel()
+
+        return render_template('calendario/datosform.html',form=form,resumen=resumen)
+
+@calendario.route('/datos_import')
+def datos_import():
+    db.session.query(Comunidad).delete()
+    db.session.query(Localidad).delete()
+    db.session.query(Festivocom).delete()
+    db.session.query(Festivoloc).delete()
+    db.session.query(Empresa).delete()
+    db.session.commit()
+
+    data = 'calendario/static/excel/calendario.xlsx'
+
+    comunidades = pd.read_excel(data,sheet_name="Comunidades")
+    comunidades.columns = ['id','comunidad','descripcion','comunidad_id']
+    comunidades = comunidades.fillna('')
+
+    for index, row in comunidades.iterrows():
+        comunidades = Comunidad(id=row['id'], nombre=row['comunidad'],descripcion=row['descripcion'])
+        db.session.add(comunidades)
+    db.session.commit()
+
+    localidades = pd.read_excel(data,sheet_name="Localidades")
+    localidades.columns = ['id','localidad','cod_localidad','cod_comunidad','descripcion']
+    localidades[['comunidad_id', 'comunidad']] = localidades['cod_comunidad'].str.split('-', expand=True)
+    localidades = localidades.fillna('')
+
+    for index, row in localidades.iterrows():
+        localidades = Localidad(id=row['id'], nombre=row['localidad'],comunidad_id=row['comunidad_id'], descripcion=row['descripcion'])
+        db.session.add(localidades)
+    db.session.commit()
+
+    fescom = pd.read_excel(data,sheet_name="Festivos_Comunidades")
+    fescom.columns = ['id','fecha','nombre','descripcion','id_comunidad']
+    fescom[['comunidad_id', 'comunidad']] = fescom['id_comunidad'].str.split('-', expand=True)
+    fescom = fescom.fillna('')
+
+    for index, row in fescom.iterrows():
+        fescom = Festivocom(fecha = row['fecha'],nombre = row['nombre'],descripcion=row['descripcion'],comunidad_id=row['comunidad_id'])
+        db.session.add(fescom)
+    db.session.commit()
+
+    fesloc = pd.read_excel(data,sheet_name="Festivos_Localidades")
+    fesloc.columns = ['id','fecha','nombre','descripcion','id_localidad']
+    fesloc[['localidad_id', 'localidad']] = fesloc['id_localidad'].str.split('-', expand=True)
+    fesloc = fesloc.fillna('')
+
+    for index, row in fesloc.iterrows():
+        fesloc = Festivoloc(fecha = row['fecha'],nombre = row['nombre'],descripcion=row['descripcion'],localidad_id=row['localidad_id'])
+        db.session.add(fesloc)
+    db.session.commit()
+
+    empresas = pd.read_excel(data,sheet_name="Empresas", names=['id','Empresa','Domicilio','Actividad','Convenio','Centro','Localidad'])
+    empresas[['localidad_id', 'localidad']] = empresas['Localidad'].str.split('-', expand=True)
+    empresas = empresas.fillna('')
+    
+    for index, row in empresas.iterrows():
+        empresa = Empresa(id=row['id'], nombre=row['Empresa'], domicilio=row['Domicilio'],actividad=row['Actividad'], convenio=row['Convenio'], centro=row['Centro'], localidad_id=row['localidad_id'])
+        db.session.add(empresa)
+    db.session.commit()
+        
+    return redirect(url_for('calendario.inicio'))
+    
 
 def leftside_queries():
     # Realiza tus consultas a la base de datos aquí
