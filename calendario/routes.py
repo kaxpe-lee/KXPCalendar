@@ -301,10 +301,10 @@ def datos_import():
 @calendario.route('/reset/')
 @login_required
 def reset():
-    db.session.query(Localidad).delete()
-    db.session.query(Festivocom).delete()
-    db.session.query(Festivoloc).delete()
     db.session.query(Empresa).delete()
+    db.session.query(Festivoloc).delete()
+    db.session.query(Festivocom).delete()
+    db.session.query(Localidad).delete()
     db.session.query(Comunidad).delete()
     db.session.commit()
 
