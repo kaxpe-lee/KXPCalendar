@@ -62,12 +62,40 @@ def comunidad(id):
     comunidad = Comunidad.query.get(id)
     return render_template('calendario/comunidad.html',localidades = localidades, comunidad = comunidad)
 
+@calendario.route('/empresa_cal/<empresa_id>')
+@login_required
+def empresa_cal(empresa_id):
+    empresa = Empresa.query.get(empresa_id)
+    loc = empresa.localidad_id
+    com = empresa.localidad.comunidad_id
+    festivoscom = Festivocom.query.filter(Festivocom.comunidad_id == com)
+    festivosloc = Festivoloc.query.filter(Festivoloc.localidad_id == loc)
+    datos = [get_calendar(1,2024,loc,com),get_calendar(2,2024,loc,com),get_calendar(3,2024,loc,com),
+             get_calendar(4,2024,loc,com),get_calendar(5,2024,loc,com),get_calendar(6,2024,loc,com),
+             get_calendar(7,2024,loc,com),get_calendar(8,2024,loc,com),get_calendar(9,2024,loc,com),
+             get_calendar(10,2024,loc,com),get_calendar(11,2024,loc,com),get_calendar(12,2024,loc,com)]
+    return render_template('calendario/empresa_cal.html',empresa = empresa,datos=datos,festivoscom=festivoscom,festivosloc=festivosloc)
+
+@calendario.route('/comunidad')
+@login_required
+def comunidades():
+    localidades = Localidad.query.order_by(Localidad.id).all()
+    return render_template('calendario/comunidades.html',localidades = localidades)
+
+
 @calendario.route('/empresa/<id>')
 @login_required
 def empresa(id):
     empresas = Empresa.query.filter(Empresa.localidad.has(Localidad.comunidad_id == id))
     comunidad = Comunidad.query.get(id)
     return render_template('calendario/empresa.html',empresas = empresas, comunidad = comunidad)
+
+@calendario.route('/empresas')
+def empresas():
+    #return "Enlace correcto"
+    empresas = Empresa.query.all()
+
+    return render_template('calendario/empresas.html',empresas=empresas)
 
 
 @calendario.route('/dias/',methods = ['POST'])
@@ -180,11 +208,12 @@ def datos():
 
 @calendario.route('/datos_import')
 def datos_import():
-    db.session.query(Comunidad).delete()
-    db.session.query(Localidad).delete()
-    db.session.query(Festivocom).delete()
-    db.session.query(Festivoloc).delete()
     db.session.query(Empresa).delete()
+    db.session.query(Festivoloc).delete()
+    db.session.query(Festivocom).delete()
+    db.session.query(Localidad).delete()
+    db.session.query(Comunidad).delete()
+    
     db.session.commit()
 
     data = 'calendario/static/excel/calendario.xlsx'
@@ -238,6 +267,18 @@ def datos_import():
     db.session.commit()
         
     return redirect(url_for('calendario.inicio'))
+
+@calendario.route('/reset/')
+@login_required
+def reset():
+    db.session.query(Localidad).delete()
+    db.session.query(Festivocom).delete()
+    db.session.query(Festivoloc).delete()
+    db.session.query(Empresa).delete()
+    db.session.query(Comunidad).delete()
+    db.session.commit()
+
+    return redirect(url_for('calendario.inicio'))
     
 
 def leftside_queries():
@@ -252,3 +293,74 @@ def leftside_queries():
 @app.context_processor
 def inject_leftside_queries():
     return dict(leftside_queries=leftside_queries())
+
+
+def get_calendar(mes, ano,localidad, comunidad):
+    day_one = Calendario.query.filter(Calendario.mes2 == mes).filter(Calendario.ejercicio == ano).filter(Calendario.dia2 == '1').first()
+    days = Calendario.query.filter(Calendario.mes2 == mes).filter(Calendario.ejercicio == ano).order_by(Calendario.fecha).all()
+   
+   # Otra opcion de consulta para revisar,left join
+    resultado2 = db.session.query(Calendario, Festivocom).join(
+    Festivocom, and_(Festivocom.calendario_id == Calendario.id, Festivocom.comunidad_id == comunidad), 
+    isouter=True).join(
+    Festivoloc, and_(Festivoloc.calendario_id == Calendario.id, Festivoloc.localidad_id == localidad),
+    isouter=True).filter(Calendario.mes2 == str(mes)).all()
+
+    # Otra opcion de consulta para revisar,left join
+    resultado = db.session.query(
+        Calendario.id,
+        Calendario.fecha,
+        Calendario.dia,
+        Calendario.weekday,
+        Calendario.nombre_mes,
+        Festivocom.nombre.label('festivocom_nombre'),
+        Festivocom.comunidad_id,
+        Festivocom.descripcion,
+        Festivoloc.nombre.label('festivoloc_nombre')
+    ).outerjoin(Festivocom, (Calendario.id == Festivocom.calendario_id) & (Festivocom.comunidad_id == comunidad)).outerjoin(Festivoloc, (Calendario.id == Festivoloc.calendario_id) & (Festivoloc.localidad_id == localidad)).filter(Calendario.mes2.like(str(mes))).all()
+
+
+    day_one_weekday = day_one.weekday
+    # CUIDADO, si añadimos filas y faltan valores que despues imprimimos dara error
+    #for d in range(day_one_weekday):
+        
+    # Supongamos que 'resultado' es una fila que proviene de una consulta
+    fechita=date.fromisoformat(str(day_one.fecha))
+    for d in range(day_one_weekday):
+        dia_cero = Calendario(fecha=fechita - timedelta(days=d+1), ejercicio='2024', mes='2',mes2='02',nombre_mes='',dia='',dia2='',trimestre='',semana=1,weekday=1)
+        days = [dia_cero] + days
+        #days.add(comunidad)
+        #resultado = {'fecha':'1900-01-01','id':'0','dia':'','dia2':'','festivocom': {'nombre': '','descripcion': ''},'festivoloc': {'nombre': '','descripcion': '' } }
+
+        # Añadir la fila completa al principio de la lista
+        #days.insert(0, resultado)
+    fila_manual = (0,None,None,None,None,None)
+
+    for d in range(day_one_weekday):
+        resultado.insert(0, fila_manual)  
+
+    year = ano
+    month = mes
+    #month_name = calendar.month_name[month]
+    #days = calendar.monthcalendar(year, month)
+    #lencal = len(days)
+
+    #print(day_one.dia)
+    #print(days)
+    
+    datos = {
+        'year' : year,
+        'month' : month,
+        'day_one_weekday' : day_one_weekday,
+        'days' : days,
+        'days_name' : ['L','M','X','J','V','S','D'],
+        'day_one' : day_one,
+        'localidad' : localidad,
+        'comunidad' : comunidad,
+        'resultado' : resultado
+    }
+    #print("localidad: ")
+    #print(localidad)
+    #print("comunidad: ")
+    #print(comunidad)
+    return datos

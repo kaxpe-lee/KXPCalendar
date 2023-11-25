@@ -35,9 +35,9 @@
             <h5 class="lside-cab">Calendario laboral</h5>
             <h5 class="lside-cab2">Empresas</h5>
             <ul class="lside-ul">
-                <li><a href="#">Todas</a></li>
+                <li><a href="{{url_for('calendario.empresas')}}">Todas</a></li>
             {% for comunidad in leftside_queries['comuni'] %}
-                <li><a href="#">{{ comunidad.nombre }}</a></li>
+                <li><a href="{{url_for('calendario.empresa',id = comunidad.id)}}">{{ comunidad.nombre }}</a></li>
             {% endfor %}
             </ul>
             <h5 class="lside-cab2">Eventos</h5>

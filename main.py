@@ -25,7 +25,7 @@ app.register_blueprint(calendario)
 @app.route('/')
 def index():
     if 'user_id' in session:
-        return "Usuario logueado"  
+        return redirect(url_for('calendario.inicio'))  
     else:
 	    return redirect(url_for('user.login'))
     
