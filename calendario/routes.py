@@ -97,6 +97,36 @@ def empresas():
 
     return render_template('calendario/empresas.html',empresas=empresas)
 
+@calendario.route('/festcom/')
+@login_required
+def festcom():
+    festivoscomunitarios = Festivocom.query.all()
+    if festivoscomunitarios:
+        meses = ('enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre')
+        cal = {'enero':get_calendar(1,2024,11,10),'febrero':get_calendar(2,2024,11,10),'marzo':get_calendar(3,2024,11,10),
+            'abril':get_calendar(4,2024,11,10),'mayo':get_calendar(5,2024,11,10),'junio':get_calendar(6,2024,11,10),
+            'julio':get_calendar(7,2024,11,10),'agosto':get_calendar(8,2024,11,10),'septiembre':get_calendar(9,2024,11,10),
+            'octubre':get_calendar(10,2024,11,10),'noviembre':get_calendar(11,2024,11,10),'diciembre':get_calendar(12,2024,11,10)}
+        #print(cal['febrero'])
+    else:
+        festivoscomunitarios, meses, cal = '','',''
+    return render_template('calendario/festcom.html',festivoscomunitarios = festivoscomunitarios,meses=meses,cal = cal)
+
+# Lista de días festivos por localidades
+@calendario.route('/festloc')
+@login_required
+def festloc():
+    festivoslocales = Festivoloc.query.all()
+    if festivoslocales:
+        meses = ('enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre')
+        cal = {'enero':get_calendar(1,2024,11,10),'febrero':get_calendar(2,2024,11,10),'marzo':get_calendar(3,2024,11,10),
+            'abril':get_calendar(4,2024,11,10),'mayo':get_calendar(5,2024,11,10),'junio':get_calendar(6,2024,11,10),
+            'julio':get_calendar(7,2024,11,10),'agosto':get_calendar(8,2024,11,10),'septiembre':get_calendar(9,2024,11,10),
+            'octubre':get_calendar(10,2024,11,10),'noviembre':get_calendar(11,2024,11,10),'diciembre':get_calendar(12,2024,11,10)}
+    else:
+        festivoslocales, meses, cal = '','',''
+    return render_template('calendario/festloc.html',festivoslocales = festivoslocales,meses=meses,cal = cal)
+
 
 @calendario.route('/dias/',methods = ['POST'])
 @login_required

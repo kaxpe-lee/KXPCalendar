@@ -42,20 +42,20 @@
             </ul>
             <h5 class="lside-cab2">Eventos</h5>
             <ul class="lside-ul">
-                <li><a href="#">Festivos Comunidad</a></li>
-                <li><a href="#">Festivos locales</a></li>
+                <li><a href="{{url_for('calendario.festcom')}}">Festivos Comunidad</a></li>
+                <li><a href="{{url_for('calendario.festloc')}}">Festivos locales</a></li>
             </ul>
             <h5 class="lside-cab2">Localidades</h5>
             <ul class="lside-ul">
-                <li><a href="#">Todas</a></li>
+                <li><a href="{{url_for('calendario.comunidades')}}">Todas</a></li>
                 {% for comunidad in leftside_queries['comuni'] %}
-                <li><a href="#">{{ comunidad.nombre }}</a></li>
+                <li><a href="{{url_for('calendario.comunidad', id = comunidad.id)}}">{{ comunidad.nombre }}</a></li>
                 {% endfor %}
             </ul>
             <h5 class="lside-cab2">Configuración</h5>
             <ul class="lside-ul">
                 <li><a href="{{url_for('calendario.datos')}}">Importar datos</a></li>
-                <li><a href="#">Reset</a></li>
+                <li><a href="{{url_for('calendario.reset')}}">Reset</a></li>
             </ul>
 
         </div>
