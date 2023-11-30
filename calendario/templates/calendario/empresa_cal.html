@@ -1,10 +1,43 @@
 {% extends 'base.html' %}
 {% block rside %}
 <h5 class="rside-cab">Empresas</h5>
-<h5 class="rside-cab2">Calendario laboral - {{empresa.nombre}} {% if empresa.centro %}({{empresa.centro}}) {% endif %}</h5>
-<div style="width:100%;text-align: center;margin-top:30px;">
+<h5 class="rside-cab2">Calendario laboral - {{empresa.nombre}} ({% if empresa.centro %}{{empresa.centro}} - {% endif %}{{empresa.localidad.nombre}}) </h5>
+<div id="empresa" style="margin-left:25px">
+    <div><span>Dirección: </span><span>{{empresa.domicilio}}</span></div>
+    <div><span>Actividad: </span><span>{{empresa.actividad}}</span></div>
+    <div><span>Convenio: </span><span>{{empresa.convenio}}</span></div>
+</div>
+<div style="margin-left:25px;margin-top:20px;font-weight: 600;">Festivos {% if festivoscom[0] %}{{festivoscom[0].comunidad.nombre}}{% endif %}</div>
+<div style="margin-left:25px;display: flex;width:100%" id="festivos">
+    <div>
+        <ul>
+            {% for fcom in com_iz %}
+            <li>{{ fcom.calendariocom.dia }} {{fcom.calendariocom.mes}} - {{ fcom.nombre }}</li>  
+            {% endfor %}
+        </ul>
+    </div>
+    <div>
+        <ul>
+            {% for fcom in com_de %}
+            <li>{{ fcom.calendariocom.dia }} {{fcom.calendariocom.mes}} - {{ fcom.nombre }}</li>  
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+<div style="margin-left:25px;margin-top:20px;font-weight: 600;">Festivos {% if festivosloc[0] %}{{festivosloc[0].localidad.nombre}}{% endif %}</div>
+<div style="margin-left:25px;width:100%" id="festivos">
+    <div>
+        <ul>
+            {% for floc in festivosloc %}
+            <li>{{ floc.calendarioloc.dia }} {{floc.calendarioloc.mes}} - {{ floc.nombre }}</li>  
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<div style="width:100%;text-align: center;margin-top:20px;">
     <span style="font-size: 22px;">Descargar calendario </span>
-    <a href="{{ url_for('calendario.calendario_anual',ejercicio='2024',localidad_id=empresa.localidad_id,empresa=empresa.id)}}"><svg xmlns="http://www.w3.org/2000/svg" height="22" viewBox="0 0 448 512">
+    <a href="{{ url_for('calendario.calendario_anual',ejercicio='2024',localidad_id=empresa.localidad_id,empresa=empresa.id)}}" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" height="22" viewBox="0 0 448 512">
         <path d="M128 0c17.7 0 32 14.3 32 32V64H288V32c0-17.7 14.3-32 32-32s32 14.3 32 32V64h48c26.5 0 48 21.5 48 48v48H0V112C0 85.5 21.5 64 48 64H96V32c0-17.7 14.3-32 32-32zM0 192H448V464c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V192zm64 80v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V272c0-8.8-7.2-16-16-16H80c-8.8 0-16 7.2-16 16zm128 0v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V272c0-8.8-7.2-16-16-16H208c-8.8 0-16 7.2-16 16zm144-16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V272c0-8.8-7.2-16-16-16H336zM64 400v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V400c0-8.8-7.2-16-16-16H80c-8.8 0-16 7.2-16 16zm144-16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V400c0-8.8-7.2-16-16-16H208zm112 16v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V400c0-8.8-7.2-16-16-16H336c-8.8 0-16 7.2-16 16z"/>
         </svg>
     </a>
@@ -48,47 +81,5 @@
         </div>
     </div>
     {% endfor %}  
-</div>
-<div style="margin-top:30px;">
-    <table class="table">
-        <caption>Festivos {% if festivoscom[0] %}{{festivoscom[0].comunidad.nombre}}{% endif %}</caption>
-        <tr>
-            <th>Fecha</th>
-            <th>Festividad</th>
-            <th>Comunidad</th>
-            <th></th>
-            <th></th>
-        </tr>
-        {% for festivo in festivoscom %}
-        <tr>
-            <td>{{ festivo.fecha}}</td>
-            <td>{{ festivo.nombre}}</td>
-            <td>{{ festivo.comunidad.nombre }}</td>
-            <td></td>
-            <td></td>
-        </tr>
-        {% endfor %}
-    </table>
-</div>
-<div style="margin-top:30px;">
-    <table class="table">
-        <caption>Festivos {% if festivosloc[0] %}{{festivosloc[0].localidad.nombre}}{% endif %}</caption>
-        <tr>
-            <th>Fecha</th>
-            <th>Festividad</th>
-            <th>Localidad</th>
-            <th></th>
-            <th></th>
-        </tr>
-        {% for festivo in festivosloc %}
-        <tr>
-            <td>{{festivo.fecha}}</td>
-            <td>{{festivo.nombre}}</td>
-            <td>{{festivo.localidad.nombre }}</td>
-            <td></td>
-            <td></td>
-        </tr>
-        {% endfor %}
-    </table>
 </div>
 {% endblock %}

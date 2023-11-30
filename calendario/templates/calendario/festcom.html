@@ -23,41 +23,5 @@
       {% endfor %}
   </table>
   <div id="separador"></div>
-<div id="cal-year-cont">
-    {% for month in meses %}
-    <div id="cal-month-cont">
-        <div id="cal-month-cont">
-            <div id="cal-month-cab">
-                <div>{{ cal[month].day_one.nombre_mes }}</div>
-                <div>{{ cal[month].day_one.ejercicio }}</div>
-            </div>
-            <div id="cal-month-names">
-                <div class="cal-month-name">lu</div>
-                <div class="cal-month-name">ma</div>
-                <div class="cal-month-name">mie</div>
-                <div class="cal-month-name">ju</div>
-                <div class="cal-month-name">vi</div>
-                <div class="cal-month-name">sa</div>
-                <div class="cal-month-name">do</div>
-            </div>
-            <div id="cal-month-days">
-                {% for day in cal[month].days %}
-                <div class="cal-month-day {% if day.weekday == 6 %} domingo {% endif %} {% if day.festivoloc.nombre %} festivoloc {% endif %} {% if day.festivocom.nombre %} festivocom {% endif %}">
-                    {{ day.dia }}
-                    {% if day.festivocom %} 
-                        {% for d in day.festivocom %}
-                            {% if d.comunidad_id == 10 %}
-                                Rojo
-                            {% endif %}
-                        {% endfor %}
-                    {% endif %}</div>
-                {% endfor %}
-            </div>
-            <div>
-            
-        </div>
-        </div>
-    </div>
-    {% endfor %}
 </div>
 {% endblock %}

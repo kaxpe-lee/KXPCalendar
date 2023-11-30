@@ -201,10 +201,6 @@ table {
     gap:20px;
     
 }
-#cal-month-cont{
-
-
-}
 #cal-month-cab {
     display: flex;
     justify-content: center;

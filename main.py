@@ -4,8 +4,8 @@ import os
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("SQLALCHEMY_DATABASE_URI")
-#app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://kaxper:miloja@localhost/agenda2py"
+#app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("SQLALCHEMY_DATABASE_URI")
+app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://kaxper:miloja@localhost/agenda2py"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'miloja1502'
 app.config['DEBUG'] = True

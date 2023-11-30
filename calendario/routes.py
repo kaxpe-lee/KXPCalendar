@@ -68,13 +68,16 @@ def empresa_cal(empresa_id):
     empresa = Empresa.query.get(empresa_id)
     loc = empresa.localidad_id
     com = empresa.localidad.comunidad_id
-    festivoscom = Festivocom.query.filter(Festivocom.comunidad_id == com)
+    festivoscom = Festivocom.query.filter(Festivocom.comunidad_id == com).all()
     festivosloc = Festivoloc.query.filter(Festivoloc.localidad_id == loc)
+    mitadc = len(festivoscom) // 2
+    com_iz = festivoscom[:mitadc+1]
+    com_de = festivoscom[mitadc+1:]
     datos = [get_calendar(1,2024,loc,com),get_calendar(2,2024,loc,com),get_calendar(3,2024,loc,com),
              get_calendar(4,2024,loc,com),get_calendar(5,2024,loc,com),get_calendar(6,2024,loc,com),
              get_calendar(7,2024,loc,com),get_calendar(8,2024,loc,com),get_calendar(9,2024,loc,com),
              get_calendar(10,2024,loc,com),get_calendar(11,2024,loc,com),get_calendar(12,2024,loc,com)]
-    return render_template('calendario/empresa_cal.html',empresa = empresa,datos=datos,festivoscom=festivoscom,festivosloc=festivosloc)
+    return render_template('calendario/empresa_cal.html',com_iz=com_iz,com_de=com_de,empresa = empresa,datos=datos,festivoscom=festivoscom,festivosloc=festivosloc)
 
 @calendario.route('/comunidad')
 @login_required
@@ -440,7 +443,7 @@ def calendario_anual(ejercicio,localidad_id,empresa):
     # Crear una respuesta Flask y establecer el contenido del PDF
     response = make_response(buffer.getvalue())
     response.headers['Content-Type'] = 'application/pdf'
-    response.headers['Content-Disposition'] = 'inline; filename=calendario_anual.pdf'
+    response.headers['Content-Disposition'] = 'attachment; filename=calendario_anual.pdf'
 
     return response
 
